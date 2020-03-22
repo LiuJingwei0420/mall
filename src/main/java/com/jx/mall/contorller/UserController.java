@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +22,6 @@ import java.util.Objects;
 import static com.jx.mall.enums.ResponseEnum.PARAM_ERROR;
 
 @RestController
-@RequestMapping("/user")
 @Slf4j
 public class UserController {
 
@@ -35,7 +34,7 @@ public class UserController {
         log.info("username={}", username);*/
 
   //raw json
-        @PostMapping("/register")
+        @PostMapping("/user/register")
         public ResponseVo<User> register(@Valid @RequestBody UserRegisterForm userForm,
                                    BindingResult bindingResult) {
             if (bindingResult.hasErrors()) {
@@ -52,7 +51,7 @@ public class UserController {
 
         }
 
-        @PostMapping("/login")
+        @PostMapping("/user/login")
         public ResponseVo<User> login(@Valid @RequestBody UserLoginForm userLoginForm,
                                       BindingResult bindingResult,
                                       HttpSession session) {
@@ -64,7 +63,31 @@ public class UserController {
 
            //设置Session
             session.setAttribute(MallConst.CURRENT_USER, userResponseVo.getData());
+            log.info("/login sessionId={}", session.getId());
 
             return userResponseVo;
         }
+
+        //session token+redis
+        @GetMapping("/user")
+        public ResponseVo<User> userInfo(HttpSession session) {
+            log.info("/user sessionId={}", session.getId());
+            User user = (User) session.getAttribute(MallConst.CURRENT_USER);
+            return ResponseVo.success(user);
+        }
+
+        //TODO 判断登录状态，拦截器
+        @PostMapping("/user/logout")
+        /*
+         *{@link TomcatServletWebServerFactory} getSessionTimeoutMinutes(){}
+         */
+        public ResponseVo logout(HttpSession session) {
+            log.info("/user/logout sessionId={}", session.getId());
+
+
+            session.removeAttribute(MallConst.CURRENT_USER);
+            return ResponseVo.success();
+
+        }
+
 }

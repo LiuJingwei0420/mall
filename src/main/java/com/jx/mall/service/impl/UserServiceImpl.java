@@ -64,7 +64,8 @@ public class UserServiceImpl implements IUserService {
             return ResponseVo.error(USERNAME_OR_PASSWORD_ERROR);
 
         }
-        return ResponseVo.success();
+        user.setPassword("");
+        return ResponseVo.success(user);
         //用户名或密码错误
     }
 
