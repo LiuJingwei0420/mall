@@ -1,13 +1,12 @@
-package com.jx.mall.pojo;
+package com.jx.mall.vo;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 @Data
-public class Product {
+public class ProductDetailVo {
     private Integer id;
 
     private Integer categoryId;
@@ -31,6 +30,4 @@ public class Product {
     private Date createTime;
 
     private Date updateTime;
-
-
 }

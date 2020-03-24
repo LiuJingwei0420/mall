@@ -1,15 +1,10 @@
-package com.jx.mall.pojo;
+package com.jx.mall.form;
+
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class Shipping {
-    private Integer id;
-
-    private Integer userId;
-
+public class ShippingForm {
     private String receiverName;
 
     private String receiverPhone;
@@ -25,10 +20,4 @@ public class Shipping {
     private String receiverAddress;
 
     private String receiverZip;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-
 }
