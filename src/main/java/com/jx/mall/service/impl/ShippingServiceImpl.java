@@ -1,5 +1,6 @@
 package com.jx.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jx.mall.dao.ShippingMapper;
 import com.jx.mall.enums.ResponseEnum;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,17 +43,35 @@ public class ShippingServiceImpl implements IShippingService {
 
     @Override
     public ResponseVo delete(Integer uid, Integer shippingId) {
-        shippingMapper.deleteByPrimaryKey()
-        return null;
+        int row = shippingMapper.deleteByIdAndUid(uid, shippingId);
+        if (row == 0) {
+            //删除失败
+            return  ResponseVo.error(ResponseEnum.DELETE_SHIPPING_FAIL);
+        }
+
+        return ResponseVo.success();
     }
 
     @Override
     public ResponseVo update(Integer uid, Integer shippingId, ShippingForm form) {
-        return null;
+
+        Shipping shipping = new Shipping();
+        BeanUtils.copyProperties(form, shipping);
+        shipping.setUserId(uid);
+        shipping.setId(shippingId);
+        int row = shippingMapper.updateByPrimaryKeySelective(shipping);
+
+        if (row == 0) {
+            return ResponseVo.error(ResponseEnum.ERROR);
+        }
+        return ResponseVo.success();
     }
 
     @Override
     public ResponseVo<PageInfo> list(Integer uid, Integer pageNum, Integer pageSize) {
-        return null;
+        PageHelper.startPage(pageNum, pageSize);
+        List<Shipping> shippings = shippingMapper.selectByUid(uid);
+        PageInfo pageInfo = new PageInfo(shippings);
+        return ResponseVo.success(pageInfo);
     }
 }
